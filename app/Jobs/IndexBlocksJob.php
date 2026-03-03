@@ -104,7 +104,11 @@ class IndexBlocksJob implements ShouldQueue
                     ];
                 }
                 if ($nativeDeposits) {
-                    DB::table('deposits')->insertOrIgnore($nativeDeposits);
+                    DB::table('deposits')->upsert(
+                        $nativeDeposits,
+                        ['asset_gate_id', 'tx_hash', 'log_index'],
+                        ['block_number', 'block_hash', 'parent_hash', 'amount_base_units', 'status', 'address_id', 'updated_at']
+                    );
                 }
             }
 
@@ -145,7 +149,11 @@ class IndexBlocksJob implements ShouldQueue
             }
 
             if ($erc20Deposits) {
-                DB::table('deposits')->insertOrIgnore($erc20Deposits);
+                DB::table('deposits')->upsert(
+                    $erc20Deposits,
+                    ['asset_gate_id', 'tx_hash', 'log_index'],
+                    ['block_number', 'block_hash', 'parent_hash', 'amount_base_units', 'status', 'address_id', 'updated_at']
+                );
             }
         }
 
